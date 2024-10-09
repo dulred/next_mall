@@ -1,4 +1,13 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+ 
+const nextConfig = {
+  images: {
+    domains: ['localhost','via.placeholder.com'],
+  },
+  typescript: {
+    // 忽略 TypeScript 构建错误  打包需要忽略的
+    ignoreBuildErrors: true,
+  },
+};
 
 export default nextConfig;

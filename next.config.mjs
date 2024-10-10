@@ -2,7 +2,7 @@
  
 const nextConfig = {
   images: {
-    domains: ['localhost','via.placeholder.com'],
+    domains: ['localhost','via.placeholder.com','www.guagnximisa.top'],
   },
   typescript: {
     // 忽略 TypeScript 构建错误  打包需要忽略的

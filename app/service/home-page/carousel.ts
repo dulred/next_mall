@@ -18,3 +18,7 @@ export const carousel_update_rank = (formData:any)=>{
 export const carousel_delete = (id:string)=>{
     return api.delete(`/api/carousel/${id}`);
 }
+
+export const carousel_link = (linkData:any)=>{
+    return api.put(`/api/carousel/link`,linkData);
+}

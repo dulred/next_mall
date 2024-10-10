@@ -1,10 +1,12 @@
 'use client'
-import { carousel_delete, carousel_list, carousel_update, carousel_update_rank, carousel_upload } from "@/app/service/home-page/carousel";
-import { Flex,Button, Upload, message, Tag, Modal, Input, Popconfirm} from "antd";
+import { carousel_delete, carousel_link, carousel_list, carousel_update, carousel_update_rank, carousel_upload } from "@/app/service/home-page/carousel";
+import { Flex,Button, Upload, message, Tag, Modal, Input, Popconfirm, Space, Select, Table} from "antd";
 import Image from 'next/image';
 import { useEffect, useState } from "react";
-import type { GetProp, PopconfirmProps, UploadProps } from 'antd';
+import type { GetProp, PopconfirmProps, TableProps, UploadProps } from 'antd';
 import  "./carousel.css"
+import { category_second } from "@/app/service/model-management/category";
+import { goods_list_byCategoryId } from "@/app/service/home-page/goods_config";
 
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
 
@@ -69,12 +71,30 @@ export default function Page( ) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [inputValue, setInputValue] = useState('');       // 用于保存输入框的值
   const [s_id, setSId] = useState('');       // 用于保存输入框的值
+  const [modalConfig, setModalConfig] = useState(0);       // 用于保存输入框的值
+  const [modalTitle, setModalTitle] = useState('');       // 用于保存输入框的值
 
-  const showModal = (id:string) => {
-    setSId(id);  // 保存 id
+  const  [t_date,setTdata] =useState([])
+  const [category,setCategory] = useState([])
+
+  const showModal = async (id:string,flag:number) => {
     setIsModalOpen(true);
-  };
+    setSId(id);  // 保存 id
+    if(flag === 0) {
+      setModalConfig(0)
+      setModalTitle("rank修改");
+    }else{
+      setModalConfig(1)
+      setModalTitle("选择跳转的商品");
+      const res = await category_second()
+      setCategory(res.data.result)
+    }
 
+  };
+  const onChange = async (value: string) => {
+    const res = await goods_list_byCategoryId(value)
+    setTdata(res.data.result)
+  };
 
  // 处理输入框值的改变
  const handleInputChange = (e:any) => {
@@ -129,6 +149,86 @@ const cancel: PopconfirmProps['onCancel'] = (e) => {
   console.log(e);
   message.error('取消删除');
 };
+
+
+
+  // table
+  interface DataType {
+    key: string;
+    id:string;
+    name: string;
+    pictureUrl: string;
+    description: string;
+    isDiscontinued: string;
+  }
+  
+  
+  const handleSelect = async (id: string) => {
+
+    const linkData = {
+      id:s_id,
+      goodsId:id
+    }
+    await carousel_link(linkData)
+    await fetchData(); // 获取新的数据
+    setIsModalOpen(false);
+};
+
+  const columns: TableProps<DataType>['columns'] = [
+    {
+      title: 'id',
+      dataIndex: 'id',
+      key: 'id',
+      width:100
+    },
+    {
+      title: '商品名称',
+      dataIndex: 'name',
+      key: 'name',
+      width:100
+    },
+    {
+      title: '图片',
+      dataIndex: 'pictureUrl',
+      key: 'pictureUrl',
+      render: (item: any) => (
+        <Image src={item} alt="s" width={152} height={152} />
+      ),
+    },
+    {
+      title: '商品描述',
+      dataIndex: 'description',
+      key: 'description',
+      width:150
+    },
+    {
+      title: '是否下架',
+      dataIndex: 'isDiscontinued',
+      key: 'isDiscontinued',
+      render: (item: any) => (
+        <Tag color={item === 'true'?'error' : 'success'}>{item === 'true'? '是' : '否'}</Tag>
+      ),
+    },
+    {
+      title: '操作',
+      key: 'action',
+      render: (_,record) => (
+        <Button type="primary" onClick={()=>handleSelect(record.id)}>选择</Button>
+      ),
+    },
+  ];
+  
+  const data: DataType[] = t_date.map((item:any,index)=>{
+    return {
+      key: `${index}`,
+      id: item.id,
+      name: item.name,
+      pictureUrl: item.pictureUrl,
+      description: item.description,
+      isDiscontinued: item.isDiscontinued === 'true'? '是' : '否',
+    }
+  })
+  
   return (
   <>
   {contextHolder}
@@ -137,7 +237,7 @@ const cancel: PopconfirmProps['onCancel'] = (e) => {
      <Flex wrap gap="middle"  >
         {
           // 假数据
-          cal.map((item, index) => (
+          cal.map((item:any, index) => (
          
             <Flex  key={index} gap="middle" vertical wrap  align="flex-start" style={{marginBottom:"30px"}}>
               <Image
@@ -189,8 +289,8 @@ const cancel: PopconfirmProps['onCancel'] = (e) => {
                  <Button  type="primary">上传</Button>
                </Upload>
                  }
-                {item.goodsId && <Button type="primary" onClick={()=>showModal(item.id)}>rank:{item.rank}</Button>}
-                {item.goodsId && <Button type="primary" onClick={()=>handleLink(item.id)}>跳转信息</Button>}
+                {item.goodsId && <Button type="primary" onClick={()=>showModal(item.id,0)}>rank:{item.rank}</Button>}
+                {item.goodsId && <Button type="primary" onClick={()=>showModal(item.id,1)}>跳转配置:{item.goodsId}</Button>}
                 {item.goodsId && 
                   <Popconfirm
                   title="请确定是否删除"
@@ -211,8 +311,25 @@ const cancel: PopconfirmProps['onCancel'] = (e) => {
         }
      </Flex>
 
-      <Modal title="rank修改" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-        <Input placeholder="请输入rank值"  value={inputValue} onChange={handleInputChange}   />
+      <Modal title={modalTitle} open={isModalOpen} onOk={handleOk} onCancel={handleCancel} width={900}>
+        {modalConfig===0 ? <Input placeholder="请输入rank值"  value={inputValue} onChange={handleInputChange} />
+         :  <>
+         <Space style={{margin:"30px 0px"}}>
+               <h3 className="">分类选择</h3>
+               <Select
+             placeholder="请选择商品所属分类"
+             optionFilterProp="label"
+             onChange={onChange}
+             options={category.map((item:any,index)=>{
+               return {value:item.id, label:item.categoryName}  // 注意key和value的对应
+             })}
+           />
+               </Space>
+       
+               <Table<DataType> columns={columns} dataSource={data} />
+         </>
+        
+        }
       </Modal>
      
     </main>

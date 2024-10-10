@@ -3,9 +3,13 @@ import axios from 'axios';
 import store from '@/app/lib/store'; // 确保导入 store
 import { setToken } from '@/app/lib/slices/authSlice';
 
+const DEV = "http://127.0.0.1:5000"
+const PRO = 'https://www.guagnximisa.top/'
+const FLAG = true
+
 const api = axios.create({
-  baseURL: 'http://127.0.0.1:5000', // 替换为你的 API 基础 URL
-  timeout: 1000,
+  baseURL: FLAG ? DEV : PRO, 
+  timeout: 5000,
 });
 
 // 请求拦截器

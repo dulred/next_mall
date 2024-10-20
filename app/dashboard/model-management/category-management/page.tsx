@@ -135,7 +135,7 @@ const showModal = async(id:string) => {
 
   // 删除自身的一级分类
   const removeItemById = (id:string) => {
-    setFirstArray((prevArray) => prevArray.filter(item => item.id !== id));
+    setFirstArray((prevArray) => prevArray.filter((item:any) => item.id !== id));
   };
 
   const onGenderChange = (value: string) => {

@@ -161,7 +161,7 @@ const columns: TableColumnsType = [
     key: 'orderState',
     fixed: 'left',
   },
-  { title: '购买信息', dataIndex: 'buyerMessage', key: 'buyerMessage' ,width: 100},
+  { title: '购买信息', dataIndex: 'buyerMessage', key: 'buyerMessage' ,width: 200},
   { title: '配送时间', dataIndex: 'deliveryTimeType', key: 'deliveryTimeType' ,width: 100},
   { title: '地址Id', dataIndex: 'addressId', key: 'addressId' ,width: 100},
   { title: '付款平台', dataIndex: 'payChannel', key: 'payChannel' ,width: 100},
@@ -175,7 +175,7 @@ const columns: TableColumnsType = [
     render: 
     (item) => 
     <Space>
-      <Button type="primary">发货</Button>
+      <Button type="primary">查看订单项</Button>
       <Button type="primary" danger>删除</Button>
       {/* <Button type="primary" onClick={()=>showModal(item.id)}>修改</Button>
       <Popconfirm

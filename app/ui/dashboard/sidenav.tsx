@@ -57,24 +57,30 @@ const items: MenuItem[] = [
       { key: '/dashboard/model-management/order-management', label: ( <Link href="/dashboard/model-management/order-management">订单管理</Link> ) },
     ],
   },
-  // {
-  //   key: 'sku',
-  //   label: 'sku管理',
-  //   icon: <AppstoreOutlined />,
-  //   children: [
-  //     { key: '/dashboard/sku/category-management', label: ( <Link href="/dashboard/sku/category-management">分类管理</Link> ) },
-  //     { key: '/dashboard/sku/product-management', label: ( <Link href="/dashboard/sku/product-management">商品管理</Link> ) },
-  //     { key: '/dashboard/sku/member-management', label: ( <Link href="/dashboard/sku/member-management">会员管理</Link> ) },
-  //     { key: '/dashboard/sku/order-management', label: ( <Link href="/dashboard/sku/order-management">订单管理</Link> ) },
-  //   ],
-  // },
+  {
+    key: 'sku',
+    label: 'sku管理',
+    icon: <AppstoreOutlined />,
+    children: [
+      { key: '/dashboard/sku/style', label: ( <Link href="/dashboard/sku/style">商品style配置</Link> ) },
+      { key: '/dashboard/sku/spec', label: ( <Link href="/dashboard/sku/spec">商品spec规格</Link> ) },
+      { key: '/dashboard/sku/sku', label: ( <Link href="/dashboard/sku/sku">商品sku配置</Link> ) },
+      { key: '/dashboard/sku/detail', label: ( <Link href="/dashboard/sku/detail">商品detail图配置</Link> ) },
+      { key: '/dashboard/sku/thumb', label: ( <Link href="/dashboard/sku/thumb">商品thumb图配置</Link> ) },
+    ],
+  },
   {
     key: 'system-setting',
     label: '系统管理',
     icon: <SettingOutlined />,
     children: [
       { key: '/dashboard/system-setting/admin-settings', label: ( <Link href="/dashboard/system-setting/admin-settings">管理员配置</Link> ) },
-      { key: '/dashboard/system-setting/change-password', label: ( <Link href="/dashboard/system-setting/change-password">修改密码</Link> ) },
+      { key: '/dashboard/system-setting/role-settings', label: ( <Link href="/dashboard/system-setting/role-settings">角色管理</Link> ) },
+      { key: '/dashboard/system-setting/menu-settings', label: ( <Link href="/dashboard/system-setting/menu-settings">菜单配置</Link> ) },
+      { key: '/dashboard/system-setting/permission-settings', label: ( <Link href="/dashboard/system-setting/permission-settings">权限配置</Link> ) },
+      { key: '/dashboard/system-setting/buried-point', label: ( <Link href="/dashboard/system-setting/buried-point">埋点数据</Link> ) },
+      { key: '/dashboard/system-setting/audit-log', label: ( <Link href="/dashboard/system-setting/audit-log">审计日志</Link> ) },
+      { key: '/dashboard/system-setting/monitor', label: ( <Link href="/dashboard/system-setting/monitor">监控与告警</Link> ) }
     ],
   },
 ];
@@ -96,6 +102,7 @@ const App: React.FC = () => {
    const handleOpenChange = (keys: string[]) => {
     setOpenKeys(keys);
   };
+  console.log(pathname)
   return (
     <div style={{ width: 256,backgroundColor: "#001529"}}>
       {/* <Link href="/" style={{color:"red"}}>撒发顺丰发<MailOutlined /></Link> */}
